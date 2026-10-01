@@ -1,0 +1,56 @@
+[project]
+name = "docs-answers"
+version = "1.0.0"
+description = "Поиск ответов по внутренним регламентам: индекс, поиск с цитатами, ответ без облака"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "python-docx>=1.1",
+]
+
+[project.scripts]
+answers = "answers.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.12",
+    "mypy>=1.17",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/answers"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "C4", "SIM", "PT", "RUF", "DTZ", "ASYNC"]
+# RUF001-003: в русских строках есть кириллица, похожая на латиницу, — это нормально.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S311"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["answers"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src"]
